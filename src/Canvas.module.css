@@ -1,0 +1,17 @@
+.canvasContainer {
+  position: relative;
+  display: block;
+}
+
+.inputsLayerDiv {
+  position: absolute;
+  background-color: transparent;
+  pointer-events: none;
+  color: #ffffff;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
