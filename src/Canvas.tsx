@@ -6,7 +6,7 @@ type CanvasContext = CanvasRenderingContext2D | null;
 const INPUT_BASE_STYLE =
   "width: 150px; pointer-events: auto; position: absolute; background-color: transparent; color: #FFFFFF; border: 2px dotted white;";
 
-const CANVAS_SIZE = { width: 600, height: 500 };
+const CANVAS_SIZE = { width: 1050, height: 576 };
 
 function drawDot(
   ctx: CanvasContext,
@@ -47,7 +47,7 @@ export default function Canvas() {
     let scale = 1;
     if (canvas && ctx) {
       ctx.fillStyle = "lightgray";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, canvas.width, canvas.width);
       const img = new Image();
       img.src = "/map.png";
 
@@ -72,12 +72,12 @@ export default function Canvas() {
       canvas.addEventListener("wheel", handleScroll);
 
       const drawImage = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(img, 0, 0, canvas.width * scale, canvas.height * scale);
+        ctx.clearRect(0, 0, canvas.width, canvas.width);
+        ctx.drawImage(img, 0, 0, canvas.width * scale, canvas.width * scale);
       };
 
       img.onload = () => {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.width);
       };
     }
   }, []);
