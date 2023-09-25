@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./Canvas.module.css";
-import { MapCanvas } from "./canvasClass/canvas.class";
+
 
 // const INPUT_BASE_STYLE =
 //   "width: 150px; pointer-events: auto; position: absolute; background-color: transparent; color: #FFFFFF; border: 2px dotted white;";
@@ -60,9 +60,9 @@ export default function Canvas() {
       const canvas = mapCanvasRef.current;
 
       if (canvas) {
-        const myCanvas = new MapCanvas(canvas, CANVAS_SIZE);
+        // const myCanvas = new MapCanvas(canvas, CANVAS_SIZE);
         return () => {
-          myCanvas.removeEventListeners();
+          // myCanvas.removeEventListeners();
         };
       }
     }
