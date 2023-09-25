@@ -44,7 +44,6 @@ export class MapCanvas {
       this.ctx.canvas.width = this.ctx.canvas.width;
       this.ctx.setTransform(storedTransform);
 
-      // this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.width);
       this.ctx.drawImage(
         this.img,
         this.imgCoords.x,
