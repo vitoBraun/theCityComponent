@@ -18,7 +18,6 @@ const ORIGIN = { x: 0, y: 0 };
 
 export class MapCanvas {
   ctx: CanvasRenderingContext2D | null;
-  SCALE_STEP: number = 0.01;
   scale: number = 1;
   img = new Image();
   imgCoords: Point = ORIGIN;
@@ -66,6 +65,24 @@ export class MapCanvas {
     }
   }
 
+  handleUpdateMouseByTouch(e: TouchEvent) {
+    e.preventDefault();
+    if (this.canvas) {
+      const touch = e.touches[0];
+      if (touch) {
+        const viewportMousePos = {
+          x: touch.clientX,
+          y: touch.clientY,
+        };
+        const topLeftCanvasPos = {
+          x: this.canvas.offsetLeft,
+          y: this.canvas.offsetTop,
+        };
+        this.mousePos = diffPoints(viewportMousePos, topLeftCanvasPos);
+      }
+    }
+  }
+
   mouseMove(e: MouseEvent) {
     if (this.ctx && this.isPanning) {
       const lastMousePos = this.lastMousePos;
@@ -80,6 +97,22 @@ export class MapCanvas {
     }
   }
 
+  touchMove(e: TouchEvent) {
+    // console.log("start move", this.isPanning);
+    if (this.ctx && this.isPanning) {
+      const lastMousePos = this.lastMousePos;
+      const touch = e.touches[0];
+
+      if (touch) {
+        const currentMousePos = { x: touch.clientX, y: touch.clientY };
+        this.lastMousePos = currentMousePos;
+        const mouseDiff = diffPoints(currentMousePos, lastMousePos);
+        this.ctx.translate(mouseDiff.x, mouseDiff.y);
+        this.render();
+      }
+    }
+  }
+
   mouseUp(e: MouseEvent) {
     this.isPanning = false;
     this.canvas.removeEventListener("mousemove", this.mouseMove);
@@ -87,7 +120,9 @@ export class MapCanvas {
   }
 
   startPan(e: MouseEvent) {
+    // console.log("start pan");
     this.canvas.addEventListener("mousemove", this.mouseMove.bind(this));
+    this.canvas.addEventListener("touchmove", this.touchMove.bind(this));
     this.canvas.addEventListener("mouseup", this.mouseUp.bind(this));
     this.lastMousePos = { x: e.pageX, y: e.pageY };
     this.isPanning = true;
@@ -111,15 +146,11 @@ export class MapCanvas {
 
   addEventListeners() {
     this.canvas.addEventListener("wheel", this.handleWheel.bind(this));
-    this.canvas.addEventListener(
-      "mousemove",
-      this.handleUpdateMouse.bind(this)
-    );
     this.canvas.addEventListener("mousedown", this.startPan.bind(this));
   }
+
   removeEventListeners() {
     this.canvas.removeEventListener("wheel", this.handleWheel);
-    this.canvas.removeEventListener("mousemove", this.handleUpdateMouse);
     this.canvas.removeEventListener("mousedown", this.startPan.bind(this));
   }
 }

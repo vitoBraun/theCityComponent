@@ -234,8 +234,6 @@ export default function CanvasMap(props: CanvasProps) {
         setViewportTopLeft(newViewportTopLeft);
         setScale(scale * zoom);
         isResetRef.current = false;
-
-
       }
     }
 
@@ -250,7 +248,6 @@ export default function CanvasMap(props: CanvasProps) {
       <pre>offset: {JSON.stringify(offset)}</pre>
       <pre>viewportTopLeft: {JSON.stringify(viewportTopLeft)}</pre>
       <canvas
-        onMouseDown={startPan}
         ref={canvasRef}
         width={props.canvasWidth * ratio}
         height={props.canvasHeight * ratio}
