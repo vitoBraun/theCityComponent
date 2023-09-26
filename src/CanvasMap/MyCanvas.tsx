@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useLayoutEffect, useRef, useState } from 'react'
 import { MapCanvas } from './MapCanvas.class';
 const CANVAS_SIZE = { width: 1050, height: 576 };
 
@@ -9,7 +9,7 @@ type MapData = {
 export default function MyCanvas() {
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const canvasInstance = useRef<MapCanvas | null>(null)
-    const [data, setData] = useState<MapData>({ scale: 1 })
+    // const [data, setData] = useState<MapData>({ scale: 1 })
 
     useLayoutEffect(() => {
         if (canvasRef.current) {
@@ -21,12 +21,12 @@ export default function MyCanvas() {
         }
     }, [])
 
-    useLayoutEffect(() => {
-        const interval = setInterval(() => setData(prev => ({ scale: canvasInstance.current!.scale })), 50)
-        return () => {
-            clearInterval(interval)
-        }
-    }, [canvasInstance.current?.scale])
+    // useLayoutEffect(() => {
+    //     const interval = setInterval(() => setData(prev => ({ scale: canvasInstance.current!.scale })), 50)
+    //     return () => {
+    //         clearInterval(interval)
+    //     }
+    // }, [canvasInstance.current?.scale])
 
 
     return (
@@ -34,7 +34,7 @@ export default function MyCanvas() {
             <canvas ref={canvasRef} width={CANVAS_SIZE.width} height={CANVAS_SIZE.height} style={{
                 border: "2px solid #000",
             }}></canvas>
-            <div>Scale: {data.scale}</div>
+            {/* <div>Scale: {data.scale}</div> */}
         </div>
     )
 }
