@@ -1,11 +1,12 @@
 import React from "react";
-import MyCanvas from "./CanvasMap/MyCanvas";
+import Kanva from "./Kanva";
+
 
 
 function App() {
   return (
     <div className="App">
-      <MyCanvas />
+      <Kanva />
     </div>
   );
 }
