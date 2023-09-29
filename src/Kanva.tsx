@@ -1,13 +1,53 @@
 import { KonvaEventObject } from 'konva/lib/Node';
 import React, { forwardRef, useRef } from 'react'
 import Konva from "konva";
-import { Stage, Layer, Image } from 'react-konva';
+import { Stage, Layer, Image, } from 'react-konva';
 import useImage from 'use-image';
 import { Vector2d } from 'konva/lib/types';
 
 const STAGE_SIZE = {
     width: 1050,
     height: 576
+}
+
+const IMAGE_SIZE = {
+    width: 3000,
+    height: 3000
+}
+
+const MIN_SCALE = STAGE_SIZE.width / IMAGE_SIZE.width
+const MAX_SCALE = 5
+
+function offsetStagePositionInBounds(stageNewPosition: Vector2d, scale: number) {
+
+    if (stageNewPosition.x > 0)
+        stageNewPosition.x = 0
+    if (stageNewPosition.y > 0)
+        stageNewPosition.y = 0
+
+    const scaleRevertKoeff = 1 / scale
+
+    const scaledStagePosition = {
+        x: stageNewPosition.x * scaleRevertKoeff,
+        y: -(stageNewPosition.y * scaleRevertKoeff),
+    }
+
+    const scaledStageSize = {
+        width: STAGE_SIZE.width * scaleRevertKoeff,
+        height: STAGE_SIZE.height * scaleRevertKoeff
+    }
+
+
+    if ((scaledStageSize.width - scaledStagePosition.x) > IMAGE_SIZE.width) {
+        stageNewPosition.x = -((IMAGE_SIZE.width - scaledStageSize.width) / scaleRevertKoeff)
+    }
+
+    if ((scaledStageSize.height + scaledStagePosition.y) > IMAGE_SIZE.height) {
+        stageNewPosition.y = -((IMAGE_SIZE.height - scaledStageSize.height) / scaleRevertKoeff)
+        console.log(scaledStageSize.height - scaledStagePosition.y)
+    }
+
+    return stageNewPosition
 }
 
 const ChildMap = forwardRef<HTMLDivElement>(({ }, ref) => {
@@ -20,11 +60,15 @@ export default function Kanva() {
     const cildRef = useRef<HTMLDivElement>(null);
     const [mapImage] = useImage('./map.png');
 
+
+
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
         const scaleBy = 1.05
-        if (stageRef.current) {
+        if (stageRef.current && imageRef.current) {
+
             // stop default scrolling
             e.evt.preventDefault();
+
 
             const oldScale = stageRef.current.scaleX();
             const pointer = stageRef.current.getPointerPosition();
@@ -39,46 +83,63 @@ export default function Kanva() {
 
             const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
 
+            // limit scaling
+            if (newScale < MIN_SCALE || newScale > MAX_SCALE) {
+                return
+            }
+
             stageRef.current.scale({ x: newScale, y: newScale });
 
+            // const oldPos = stageRef.current.position()
+
+            // console.log(imageRef.current.getPosition())
             const newPos = {
                 x: pointer!.x - mousePointTo.x * newScale,
                 y: pointer!.y - mousePointTo.y * newScale,
             };
-            stageRef.current.position(newPos);
+            // if (newPos.x > 0 || newPos.y > 0) {
+            //     newPos.x = 0
+            //     newPos.y = 0
+            // }
+
+            stageRef.current.position(offsetStagePositionInBounds(newPos, newScale));
         }
     }
 
-    const dragImgBoundFunc = (pos: Vector2d): Vector2d => {
-        console.log(stageRef.current?.scale())
+    const handleMoveMap = (pos: Vector2d): Vector2d => {
+
         if (stageRef.current && imageRef.current) {
-            const stageWidth = stageRef.current.width();
-            const stageHeight = stageRef.current.height();
-
-            // Restrict movement within stage boundaries
-            const newX = Math.max(0, Math.min(stageWidth + imageRef.current.width(), pos.x));
-            const newY = Math.max(0, Math.min(stageHeight + imageRef.current.height(), pos.y));
-
-            return {
-                x: newX,
-                y: newY
-            };
+            const currentScale = stageRef.current.scaleX()
+            // console.log(scale)
+            // const oldPos = stageRef.current.position()
+            // if (pos.x > 0 || pos.y > 0) {
+            //     return oldPos
+            // }
+            // const stagePos = stageRef.current.position();
+            // if (stagePos.x > stageBounds.left) {
+            //     stagePos.x = stageBounds.left;
+            // } else if (stagePos.y > stageBounds.top) {
+            //     stagePos.y = stageBounds.top;
+            // }
+            // stageRef.current.position(stagePos);
+            // console.log('old - ', oldPos)
+            // console.log('new - ', pos)
+            // console.log(stageBounds)
+            return offsetStagePositionInBounds(pos, currentScale)
         }
-        else {
-            return {
-                x: 0,
-                y: 0
-            };
-        }
+        return pos
+
     }
 
     return (
         <>
             <ChildMap ref={cildRef} />
-            <Stage ref={stageRef} {...STAGE_SIZE} onWheel={handleWheel} >
+            <Stage ref={stageRef} {...STAGE_SIZE} onWheel={handleWheel} draggable dragBoundFunc={handleMoveMap} >
+
                 <Layer>
-                    <Image image={mapImage} draggable ref={imageRef} dragBoundFunc={dragImgBoundFunc} />
+                    <Image image={mapImage} ref={imageRef} />
                 </Layer>
+
             </Stage>
         </>
     )
