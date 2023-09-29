@@ -19,12 +19,6 @@ const MIN_SCALE = STAGE_SIZE.width / IMAGE_SIZE.width
 const MAX_SCALE = 5
 
 function offsetStagePositionInBounds(stageNewPosition: Vector2d, scale: number) {
-
-    if (stageNewPosition.x > 0)
-        stageNewPosition.x = 0
-    if (stageNewPosition.y > 0)
-        stageNewPosition.y = 0
-
     const scaleRevertKoeff = 1 / scale
 
     const scaledStagePosition = {
@@ -37,6 +31,11 @@ function offsetStagePositionInBounds(stageNewPosition: Vector2d, scale: number) 
         height: STAGE_SIZE.height * scaleRevertKoeff
     }
 
+    if (stageNewPosition.x > 0)
+        stageNewPosition.x = 0
+
+    if (stageNewPosition.y > 0)
+        stageNewPosition.y = 0
 
     if ((scaledStageSize.width - scaledStagePosition.x) > IMAGE_SIZE.width) {
         stageNewPosition.x = -((IMAGE_SIZE.width - scaledStageSize.width) / scaleRevertKoeff)
@@ -44,7 +43,6 @@ function offsetStagePositionInBounds(stageNewPosition: Vector2d, scale: number) 
 
     if ((scaledStageSize.height - scaledStagePosition.y) > IMAGE_SIZE.height) {
         stageNewPosition.y = -((IMAGE_SIZE.height - scaledStageSize.height) / scaleRevertKoeff)
-        console.log(scaledStageSize.height - scaledStagePosition.y)
     }
 
     return stageNewPosition
