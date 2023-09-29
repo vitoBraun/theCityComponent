@@ -110,7 +110,7 @@ export default function Kanva() {
     return (
         <>
             <ChildMap ref={cildRef} />
-            <Stage ref={stageRef} {...STAGE_SIZE} onWheel={handleWheel} draggable dragBoundFunc={handleMoveMap} >
+            <Stage ref={stageRef} {...STAGE_SIZE} onWheel={handleWheel} draggable dragBoundFunc={handleMoveMap} scale={{ x: 0.5, y: 0.5 }} >
 
                 <Layer>
                     <Image image={mapImage} ref={imageRef} />
