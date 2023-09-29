@@ -90,18 +90,11 @@ export default function Kanva() {
 
             stageRef.current.scale({ x: newScale, y: newScale });
 
-            // const oldPos = stageRef.current.position()
-
-            // console.log(imageRef.current.getPosition())
             const newPos = {
                 x: pointer!.x - mousePointTo.x * newScale,
                 y: pointer!.y - mousePointTo.y * newScale,
             };
-            // if (newPos.x > 0 || newPos.y > 0) {
-            //     newPos.x = 0
-            //     newPos.y = 0
-            // }
-
+   
             stageRef.current.position(offsetStagePositionInBounds(newPos, newScale));
         }
     }
@@ -110,21 +103,6 @@ export default function Kanva() {
 
         if (stageRef.current && imageRef.current) {
             const currentScale = stageRef.current.scaleX()
-            // console.log(scale)
-            // const oldPos = stageRef.current.position()
-            // if (pos.x > 0 || pos.y > 0) {
-            //     return oldPos
-            // }
-            // const stagePos = stageRef.current.position();
-            // if (stagePos.x > stageBounds.left) {
-            //     stagePos.x = stageBounds.left;
-            // } else if (stagePos.y > stageBounds.top) {
-            //     stagePos.y = stageBounds.top;
-            // }
-            // stageRef.current.position(stagePos);
-            // console.log('old - ', oldPos)
-            // console.log('new - ', pos)
-            // console.log(stageBounds)
             return offsetStagePositionInBounds(pos, currentScale)
         }
         return pos
