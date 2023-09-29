@@ -29,7 +29,7 @@ function offsetStagePositionInBounds(stageNewPosition: Vector2d, scale: number) 
 
     const scaledStagePosition = {
         x: stageNewPosition.x * scaleRevertKoeff,
-        y: -(stageNewPosition.y * scaleRevertKoeff),
+        y: stageNewPosition.y * scaleRevertKoeff,
     }
 
     const scaledStageSize = {
@@ -42,7 +42,7 @@ function offsetStagePositionInBounds(stageNewPosition: Vector2d, scale: number) 
         stageNewPosition.x = -((IMAGE_SIZE.width - scaledStageSize.width) / scaleRevertKoeff)
     }
 
-    if ((scaledStageSize.height + scaledStagePosition.y) > IMAGE_SIZE.height) {
+    if ((scaledStageSize.height - scaledStagePosition.y) > IMAGE_SIZE.height) {
         stageNewPosition.y = -((IMAGE_SIZE.height - scaledStageSize.height) / scaleRevertKoeff)
         console.log(scaledStageSize.height - scaledStagePosition.y)
     }
@@ -94,7 +94,7 @@ export default function Kanva() {
                 x: pointer!.x - mousePointTo.x * newScale,
                 y: pointer!.y - mousePointTo.y * newScale,
             };
-   
+
             stageRef.current.position(offsetStagePositionInBounds(newPos, newScale));
         }
     }
