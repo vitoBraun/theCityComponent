@@ -29,7 +29,7 @@ const locationPoints: LocationPoint[] = [
   },
 ];
 
-function offsetStagePositionInBounds(
+function getBoundedStagePosition(
   stageNewPosition: Vector2d,
   scale: number
 ) {
@@ -104,13 +104,13 @@ export default React.memo(() => {
       y: pointer!.y - mousePointTo.y * newScale,
     };
 
-    stageRef.current.position(offsetStagePositionInBounds(newPos, newScale));
+    stageRef.current.position(getBoundedStagePosition(newPos, newScale));
   };
 
   const handleMoveStage = (pos: Vector2d): Vector2d => {
     if (stageRef.current) {
       const currentScale = stageRef.current.scaleX();
-      return offsetStagePositionInBounds(pos, currentScale);
+      return getBoundedStagePosition(pos, currentScale);
     }
     return pos;
   };
