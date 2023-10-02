@@ -35,16 +35,23 @@ type Point = {
   position: TextPosition;
 };
 
+function createRandomPosition() {
+  return {
+    x: Math.floor(Math.random() * (IMAGE_SIZE.height / 2)) + 1000,
+    y: Math.floor(Math.random() * (IMAGE_SIZE.width / 2)) + 1000,
+  };
+}
+
 const locationPoints: Point[] = [
   {
     id: 1,
-    pos: { x: 1500, y: 1600 },
+    pos: createRandomPosition(),
     text: "Улица Правды 24",
     position: "left-top",
   },
   {
     id: 2,
-    pos: { x: 1600, y: 1700 },
+    pos: createRandomPosition(),
     text: "Улица Правды 20",
     position: "left-top",
   },
@@ -137,16 +144,11 @@ export default function Kanva() {
   };
 
   const addPoint = () => {
-    const randPos = {
-      x: Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000,
-      y: Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000,
-    };
-
     setPoints((prev) => [
       ...prev,
       {
         id: 1,
-        pos: randPos,
+        pos: createRandomPosition(),
         text: "Улица Правды 24",
         position: "left-top",
       },
