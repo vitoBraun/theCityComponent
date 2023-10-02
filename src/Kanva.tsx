@@ -1,5 +1,5 @@
 import { KonvaEventObject } from "konva/lib/Node";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import Konva from "konva";
 import { Stage, Layer, Image, Circle, Text } from "react-konva";
 import useImage from "use-image";
@@ -35,7 +35,7 @@ type Point = {
   position: TextPosition;
 };
 
-const points: Point[] = [
+const locationPoints: Point[] = [
   {
     id: 1,
     pos: { x: 1500, y: 1600 },
@@ -88,8 +88,11 @@ function offsetStagePositionInBounds(
 }
 
 export default function Kanva() {
+  const [scale, setScale] = useState(0.5);
   const stageRef = useRef<Konva.Stage>(null);
   const [mapImage] = useImage("./map.png");
+
+  const [points, setPoints] = useState(locationPoints);
 
   const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
     const scaleBy = 1.05;
@@ -114,6 +117,7 @@ export default function Kanva() {
       return;
     }
 
+    setScale(newScale);
     stageRef.current.scale({ x: newScale, y: newScale });
 
     const newPos = {
@@ -132,6 +136,23 @@ export default function Kanva() {
     return pos;
   };
 
+  const addPoint = () => {
+    const randPos = {
+      x: Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000,
+      y: Math.floor(Math.random() * (2000 - 1000 + 1)) + 1000,
+    };
+
+    setPoints((prev) => [
+      ...prev,
+      {
+        id: 1,
+        pos: randPos,
+        text: "Улица Правды 24",
+        position: "left-top",
+      },
+    ]);
+  };
+
   return (
     <>
       <Stage
@@ -140,7 +161,7 @@ export default function Kanva() {
         onWheel={handleWheel}
         draggable
         dragBoundFunc={handleMoveStage}
-        scale={{ x: 0.5, y: 0.5 }}
+        scale={{ x: scale, y: scale }}
       >
         <Layer>
           <Image image={mapImage} />
@@ -153,13 +174,20 @@ export default function Kanva() {
                 fill="white"
                 x={point.pos.x}
                 y={point.pos.y}
-                fontSize={40}
+                fontSize={30 / scale}
               />
-              <Circle x={point.pos.x} y={point.pos.y} fill="red" radius={10} />
+              <Circle
+                x={point.pos.x}
+                y={point.pos.y}
+                fill="red"
+                radius={8 / scale}
+              />
             </>
           ))}
         </Layer>
       </Stage>
+
+      <button onClick={addPoint}>Add point</button>
     </>
   );
 }
