@@ -1,10 +1,10 @@
 import React from "react";
-import Kanva from "./Kanva";
+import TheCityMap from "./KonvaMap/TheCityMap";
 
 function App() {
   return (
     <div className="App">
-      <Kanva />
+      <TheCityMap />
     </div>
   );
 }

@@ -4,54 +4,26 @@ import Konva from "konva";
 import { Stage, Layer, Image, Circle, Text } from "react-konva";
 import useImage from "use-image";
 import { Vector2d } from "konva/lib/types";
+import { IMAGE_SIZE, MAX_SCALE, MIN_SCALE, STAGE_SIZE } from "./constants";
+import { LocationPoint } from "./types";
 
-const STAGE_SIZE = {
-  width: 1050,
-  height: 576,
-};
-
-const IMAGE_SIZE = {
-  width: 3000,
-  height: 3000,
-};
-
-const MIN_SCALE = STAGE_SIZE.width / IMAGE_SIZE.width;
-const MAX_SCALE = 5;
-
-type TextPosition =
-  | "left"
-  | "right"
-  | "top"
-  | "left-top"
-  | "right-top"
-  | "bottom"
-  | "bottom-left"
-  | "bottom-right";
-
-type Point = {
-  id: number;
-  pos: Vector2d;
-  text: string;
-  position: TextPosition;
-};
-
-function createRandomPosition() {
+function createRandomPosition(from: number, to: number) {
   return {
-    x: Math.floor(Math.random() * (IMAGE_SIZE.height / 2)) + 1000,
-    y: Math.floor(Math.random() * (IMAGE_SIZE.width / 2)) + 1000,
+    x: Math.floor(Math.random() * (to - from + 1)) + from,
+    y: Math.floor(Math.random() * (to - from + 1)) + from,
   };
 }
 
-const locationPoints: Point[] = [
+const locationPoints: LocationPoint[] = [
   {
     id: 1,
-    pos: createRandomPosition(),
+    pos: createRandomPosition(1000, 2000),
     text: "Улица Правды 24",
     position: "left-top",
   },
   {
     id: 2,
-    pos: createRandomPosition(),
+    pos: createRandomPosition(500, 2000),
     text: "Улица Правды 20",
     position: "left-top",
   },
@@ -94,7 +66,7 @@ function offsetStagePositionInBounds(
   return stageNewPosition;
 }
 
-export default function Kanva() {
+export default React.memo(() => {
   const [scale, setScale] = useState(0.5);
   const stageRef = useRef<Konva.Stage>(null);
   const [mapImage] = useImage("./map.png");
@@ -148,7 +120,7 @@ export default function Kanva() {
       ...prev,
       {
         id: 1,
-        pos: createRandomPosition(),
+        pos: createRandomPosition(500, 2000),
         text: "Улица Правды 24",
         position: "left-top",
       },
@@ -171,18 +143,18 @@ export default function Kanva() {
         <Layer>
           {points.map((point) => (
             <>
+              <Circle
+                x={point.pos.x}
+                y={point.pos.y}
+                fill="red"
+                radius={8 / scale}
+              />
               <Text
                 text={point.text}
                 fill="white"
                 x={point.pos.x}
                 y={point.pos.y}
                 fontSize={30 / scale}
-              />
-              <Circle
-                x={point.pos.x}
-                y={point.pos.y}
-                fill="red"
-                radius={8 / scale}
               />
             </>
           ))}
@@ -192,4 +164,4 @@ export default function Kanva() {
       <button onClick={addPoint}>Add point</button>
     </>
   );
-}
+});
