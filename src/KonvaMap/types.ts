@@ -16,3 +16,11 @@ export type LocationPoint = {
   text: string;
   position: TextPosition;
 };
+
+export type Size = { width: number; height: number };
+
+export type MapProps = {
+  maxScale: number;
+  minScale: number;
+  stageSize: Size;
+};

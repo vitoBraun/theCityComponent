@@ -4,7 +4,11 @@ import TheCityMap from "./KonvaMap/TheCityMap";
 function App() {
   return (
     <div className="App">
-      <TheCityMap />
+      <TheCityMap
+        maxScale={5}
+        stageSize={{ width: 1050, height: 600 }}
+        minScale={0.35}
+      />
     </div>
   );
 }

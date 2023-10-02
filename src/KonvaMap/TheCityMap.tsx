@@ -4,8 +4,9 @@ import Konva from "konva";
 import { Stage, Layer, Image, Circle, Text } from "react-konva";
 import useImage from "use-image";
 import { Vector2d } from "konva/lib/types";
-import { IMAGE_SIZE, MAX_SCALE, MIN_SCALE, STAGE_SIZE } from "./constants";
-import { LocationPoint } from "./types";
+
+import { LocationPoint, MapProps } from "./types";
+import { getBoundedStagePosition } from "./helpers";
 
 function createRandomPosition(from: number, to: number) {
   return {
@@ -29,48 +30,15 @@ const locationPoints: LocationPoint[] = [
   },
 ];
 
-function getBoundedStagePosition(
-  stageNewPosition: Vector2d,
-  scale: number
-) {
-  const scaleRevertKoeff = 1 / scale;
-
-  const scaledStagePosition = {
-    x: stageNewPosition.x * scaleRevertKoeff,
-    y: stageNewPosition.y * scaleRevertKoeff,
-  };
-
-  const scaledStageSize = {
-    width: STAGE_SIZE.width * scaleRevertKoeff,
-    height: STAGE_SIZE.height * scaleRevertKoeff,
-  };
-
-  if (stageNewPosition.x > 0) stageNewPosition.x = 0;
-
-  if (stageNewPosition.y > 0) stageNewPosition.y = 0;
-
-  if (scaledStageSize.width - scaledStagePosition.x > IMAGE_SIZE.width) {
-    stageNewPosition.x = -(
-      (IMAGE_SIZE.width - scaledStageSize.width) /
-      scaleRevertKoeff
-    );
-  }
-
-  if (scaledStageSize.height - scaledStagePosition.y > IMAGE_SIZE.height) {
-    stageNewPosition.y = -(
-      (IMAGE_SIZE.height - scaledStageSize.height) /
-      scaleRevertKoeff
-    );
-  }
-
-  return stageNewPosition;
-}
-
-export default React.memo(() => {
-  const [scale, setScale] = useState(0.5);
+export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const stageRef = useRef<Konva.Stage>(null);
   const [mapImage] = useImage("./map.png");
+  const mapImageSize = {
+    width: mapImage?.naturalWidth || 0,
+    height: mapImage?.naturalHeight || 0,
+  };
 
+  const [scale, setScale] = useState(minScale);
   const [points, setPoints] = useState(locationPoints);
 
   const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
@@ -92,7 +60,7 @@ export default React.memo(() => {
 
     const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
 
-    if (newScale < MIN_SCALE || newScale > MAX_SCALE) {
+    if (newScale < minScale || newScale > maxScale) {
       return;
     }
 
@@ -104,13 +72,15 @@ export default React.memo(() => {
       y: pointer!.y - mousePointTo.y * newScale,
     };
 
-    stageRef.current.position(getBoundedStagePosition(newPos, newScale));
+    stageRef.current.position(
+      getBoundedStagePosition(newPos, newScale, stageSize, mapImageSize)
+    );
   };
 
   const handleMoveStage = (pos: Vector2d): Vector2d => {
     if (stageRef.current) {
       const currentScale = stageRef.current.scaleX();
-      return getBoundedStagePosition(pos, currentScale);
+      return getBoundedStagePosition(pos, currentScale, stageSize, mapImageSize);
     }
     return pos;
   };
@@ -131,7 +101,7 @@ export default React.memo(() => {
     <>
       <Stage
         ref={stageRef}
-        {...STAGE_SIZE}
+        {...stageSize}
         onWheel={handleWheel}
         draggable
         dragBoundFunc={handleMoveStage}
