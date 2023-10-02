@@ -32,7 +32,7 @@ const locationPoints: LocationPoint[] = [
 
 export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const stageRef = useRef<Konva.Stage>(null);
-  const [mapImage] = useImage("./map.png");
+  const [mapImage, imageStatus] = useImage("./map.png");
   const mapImageSize = {
     width: mapImage?.naturalWidth || 0,
     height: mapImage?.naturalHeight || 0,
@@ -72,15 +72,25 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
       y: pointer!.y - mousePointTo.y * newScale,
     };
 
-    stageRef.current.position(
-      getBoundedStagePosition(newPos, newScale, stageSize, mapImageSize)
+    const boundedPos = getBoundedStagePosition(
+      newPos,
+      newScale,
+      stageSize,
+      mapImageSize
     );
+
+    stageRef.current.position(boundedPos);
   };
 
   const handleMoveStage = (pos: Vector2d): Vector2d => {
     if (stageRef.current) {
       const currentScale = stageRef.current.scaleX();
-      return getBoundedStagePosition(pos, currentScale, stageSize, mapImageSize);
+      return getBoundedStagePosition(
+        pos,
+        currentScale,
+        stageSize,
+        mapImageSize
+      );
     }
     return pos;
   };
@@ -96,6 +106,10 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
       },
     ]);
   };
+
+  if (imageStatus === "loading") {
+    return <div>Loadding...</div>;
+  }
 
   return (
     <>
