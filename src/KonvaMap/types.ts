@@ -1,20 +1,23 @@
 import { Vector2d } from "konva/lib/types";
 
-export type TextPosition =
-  | "left"
-  | "right"
-  | "top"
-  | "left-top"
-  | "right-top"
-  | "bottom"
-  | "bottom-left"
-  | "bottom-right";
+export const TextPosition = {
+  left: "Слева",
+  right: "Справа",
+  top: "Сверху",
+  "top-left": "Сверху Слева",
+  "top-right": "Сверху Справа",
+  bottom: "Снизу",
+  "bottom-left": "Снизу Слева",
+  "bottom-right": "Снизу Справа",
+};
+
+export type TextPos = keyof typeof TextPosition;
 
 export type LocationPoint = {
-  id: number;
+  id: string;
   pos: Vector2d;
   text: string;
-  position: TextPosition;
+  textPos: TextPos;
 };
 
 export type Size = { width: number; height: number };

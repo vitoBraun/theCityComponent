@@ -1,5 +1,5 @@
 import { Vector2d } from "konva/lib/types";
-import { Size } from "./types";
+import { LocationPoint, Size } from "./types";
 
 export function getBoundedStagePosition(
   stageNewPosition: Vector2d,
@@ -38,4 +38,62 @@ export function getBoundedStagePosition(
   }
 
   return stageNewPosition;
+}
+
+export function getTextOffset(
+  textPos: LocationPoint["textPos"],
+  textSize: Size,
+  scale: number
+) {
+  const xOffsetes = {
+    left: (textSize.width + 11) / scale,
+    right: -11 / scale,
+    center: textSize.width / 2 / scale,
+  };
+
+  const yOffsets = {
+    top: (textSize.height + 4) / scale,
+    bottom: (-textSize.height + 11) / 2 / scale,
+    middle: textSize.height / 2 / scale,
+  };
+
+  switch (textPos) {
+    case "left":
+      return {
+        offsetX: xOffsetes.left,
+        offsetY: yOffsets.middle,
+      };
+    case "right":
+      return { offsetX: xOffsetes.right, offsetY: yOffsets.middle };
+    case "top":
+      return {
+        offsetX: xOffsetes.center,
+        offsetY: yOffsets.top,
+      };
+    case "top-left":
+      return {
+        offsetX: xOffsetes.left,
+        offsetY: yOffsets.top,
+      };
+    case "top-right":
+      return {
+        offsetX: xOffsetes.right,
+        offsetY: yOffsets.top,
+      };
+    case "bottom":
+      return {
+        offsetX: xOffsetes.center,
+        offsetY: yOffsets.bottom,
+      };
+    case "bottom-left":
+      return {
+        offsetX: xOffsetes.left,
+        offsetY: yOffsets.bottom,
+      };
+    case "bottom-right":
+      return {
+        offsetX: xOffsetes.right,
+        offsetY: yOffsets.bottom,
+      };
+  }
 }

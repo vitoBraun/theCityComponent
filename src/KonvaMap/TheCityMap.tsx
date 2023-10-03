@@ -1,12 +1,13 @@
 import { KonvaEventObject } from "konva/lib/Node";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Konva from "konva";
-import { Stage, Layer, Image, Circle, Text, Group } from "react-konva";
+import { Stage, Layer, Image } from "react-konva";
 import useImage from "use-image";
 import { Vector2d } from "konva/lib/types";
-
-import { LocationPoint, MapProps } from "./types";
+import { nanoid } from "nanoid";
+import { LocationPoint, MapProps, TextPos, TextPosition } from "./types";
 import { getBoundedStagePosition } from "./helpers";
+import TextLocationPointGroup from "./TextLocationPointGroup";
 
 function createRandomPosition(from: number, to: number) {
   return {
@@ -17,16 +18,16 @@ function createRandomPosition(from: number, to: number) {
 
 const locationPoints: LocationPoint[] = [
   {
-    id: 1,
+    id: "sdsd",
     pos: createRandomPosition(1000, 2000),
     text: "Улица Правды 24",
-    position: "left-top",
+    textPos: "top-left",
   },
   {
-    id: 2,
+    id: "adsadads",
     pos: createRandomPosition(500, 2000),
     text: "Улица Правды 20",
-    position: "left-top",
+    textPos: "top-right",
   },
 ];
 
@@ -39,7 +40,12 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   };
 
   const [scale, setScale] = useState(minScale);
-  const [points, setPoints] = useState(locationPoints);
+  const [points, setPoints] = useState<LocationPoint[]>([]);
+
+  const [newPointData, setNewPointData] = useState({
+    text: "Ул. Николаева 11В",
+    textPos: "right",
+  });
 
   const stageCenterPos = {
     x: -(mapImageSize.width * minScale - stageSize.width) / 2,
@@ -100,17 +106,18 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
     return pos;
   };
 
-  const addPoint = () => {
+  const addPoint = useCallback(() => {
     setPoints((prev) => [
       ...prev,
       {
-        id: 1,
+        id: nanoid(),
         pos: createRandomPosition(500, 2000),
-        text: "Улица Правды 24",
-        position: "left-top",
+        // pos: { x: 1612.4284253073436, y: 1702.802797238678 },
+        text: newPointData.text,
+        textPos: newPointData.textPos as TextPos,
       },
     ]);
-  };
+  }, [newPointData]);
 
   if (imageStatus === "loading") {
     return <div>Loadding...</div>;
@@ -132,22 +139,39 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
           <Image image={mapImage} />
         </Layer>
         <Layer>
-          {points.map((point) => (
-            <Group x={point.pos.x} y={point.pos.y} key={point.id}>
-              <Circle fill="red" radius={8 / scale} />
-              <Text
-                text={point.text}
-                fill="white"
-                fontSize={25 / scale}
-                align="left"
-                verticalAlign="middle"
-              />
-            </Group>
+          {points?.map((point) => (
+            <TextLocationPointGroup
+              point={point}
+              scale={scale}
+              key={point.id}
+            />
           ))}
         </Layer>
       </Stage>
 
-      <button onClick={addPoint}>Add point</button>
+      <label htmlFor="#textInput">Текст</label>
+      <input
+        type="text"
+        id="textInput"
+        value={newPointData.text}
+        onChange={(e) => {
+          setNewPointData((prev) => ({ ...prev, text: e.target.value }));
+        }}
+      />
+      <select
+        value={newPointData.textPos}
+        onChange={(e) => {
+          setNewPointData((prev) => ({
+            ...prev,
+            textPos: e.target.value as TextPos,
+          }));
+        }}
+      >
+        {Object.keys(TextPosition).map((pos) => (
+          <option value={pos}>{TextPosition[pos as TextPos]}</option>
+        ))}
+      </select>
+      <button onClick={addPoint}>Добавить</button>
     </>
   );
 });
