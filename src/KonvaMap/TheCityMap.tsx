@@ -133,7 +133,7 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         </Layer>
         <Layer>
           {points.map((point) => (
-            <Group x={point.pos.x} y={point.pos.y}>
+            <Group x={point.pos.x} y={point.pos.y} key={point.id}>
               <Circle fill="red" radius={8 / scale} />
               <Text
                 text={point.text}
