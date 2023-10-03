@@ -1,7 +1,7 @@
 import { KonvaEventObject } from "konva/lib/Node";
 import React, { useRef, useState } from "react";
 import Konva from "konva";
-import { Stage, Layer, Image, Circle, Text } from "react-konva";
+import { Stage, Layer, Image, Circle, Text, Group, Rect } from "react-konva";
 import useImage from "use-image";
 import { Vector2d } from "konva/lib/types";
 
