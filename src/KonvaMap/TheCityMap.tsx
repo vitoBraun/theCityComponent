@@ -41,6 +41,11 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const [scale, setScale] = useState(minScale);
   const [points, setPoints] = useState(locationPoints);
 
+  const stageCenterPos = {
+    x: -(mapImageSize.width * minScale - stageSize.width) / 2,
+    y: -(mapImageSize.height * minScale - stageSize.height) / 2,
+  };
+
   const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
     const scaleBy = 1.05;
     if (!stageRef.current) {
@@ -85,6 +90,7 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const handleMoveStage = (pos: Vector2d): Vector2d => {
     if (stageRef.current) {
       const currentScale = stageRef.current.scaleX();
+      console.log(pos);
       return getBoundedStagePosition(
         pos,
         currentScale,
@@ -120,6 +126,8 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         draggable
         dragBoundFunc={handleMoveStage}
         scale={{ x: scale, y: scale }}
+        x={stageCenterPos.x}
+        y={stageCenterPos.y}
       >
         <Layer>
           <Image image={mapImage} />
