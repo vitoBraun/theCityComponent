@@ -126,21 +126,16 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         </Layer>
         <Layer>
           {points.map((point) => (
-            <>
-              <Circle
-                x={point.pos.x}
-                y={point.pos.y}
-                fill="red"
-                radius={8 / scale}
-              />
+            <Group x={point.pos.x} y={point.pos.y}>
+              <Circle fill="red" radius={8 / scale} />
               <Text
                 text={point.text}
                 fill="white"
-                x={point.pos.x}
-                y={point.pos.y}
-                fontSize={30 / scale}
+                fontSize={25 / scale}
+                align="left"
+                verticalAlign="middle"
               />
-            </>
+            </Group>
           ))}
         </Layer>
       </Stage>
