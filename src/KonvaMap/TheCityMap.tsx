@@ -16,21 +16,6 @@ function createRandomPosition(from: number, to: number) {
   };
 }
 
-const locationPoints: LocationPoint[] = [
-  {
-    id: "sdsd",
-    pos: createRandomPosition(1000, 2000),
-    text: "Улица Правды 24",
-    textPos: "top-left",
-  },
-  {
-    id: "adsadads",
-    pos: createRandomPosition(500, 2000),
-    text: "Улица Правды 20",
-    textPos: "top-right",
-  },
-];
-
 export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const stageRef = useRef<Konva.Stage>(null);
   const [mapImage, imageStatus] = useImage("./map.png");
@@ -119,6 +104,13 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
     ]);
   }, [newPointData]);
 
+  const handleDeletePoint = (
+    e: React.MouseEvent<HTMLButtonElement> & { target: { id: string } }
+  ) => {
+    const filteredPoints = points.filter((p) => p.id !== e.target.id);
+    setPoints(filteredPoints);
+  };
+
   if (imageStatus === "loading") {
     return <div>Loadding...</div>;
   }
@@ -176,6 +168,33 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         ))}
       </select>
       <button onClick={addPoint}>Добавить</button>
+      {points.length > 0 && (
+        <table>
+          <thead>
+            <tr>
+              <th>Текст</th>
+              <th>Координаты</th>
+              <th>Ориентация текста</th>
+            </tr>
+          </thead>
+          <tbody>
+            {points.map((point) => (
+              <tr key={point.id}>
+                <td>{point.text}</td>
+                <td>
+                  {point.pos.x} {point.pos.y}
+                </td>
+                <td>{TextPosition[point.textPos]}</td>
+                <td>
+                  <button id={point.id} onClick={handleDeletePoint}>
+                    X
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </>
   );
 });
