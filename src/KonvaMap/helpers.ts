@@ -97,3 +97,10 @@ export function getTextOffset(
       };
   }
 }
+
+export function createRandomPosition(from: number, to: number) {
+  return {
+    x: Math.floor(Math.random() * (to - from + 1)) + from,
+    y: Math.floor(Math.random() * (to - from + 1)) + from,
+  };
+}

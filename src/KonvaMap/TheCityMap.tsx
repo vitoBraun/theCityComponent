@@ -1,20 +1,13 @@
 import { KonvaEventObject } from "konva/lib/Node";
-import React, { useCallback, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Konva from "konva";
 import { Stage, Layer, Image } from "react-konva";
 import useImage from "use-image";
 import { Vector2d } from "konva/lib/types";
-import { nanoid } from "nanoid";
-import { LocationPoint, MapProps, TextPos, TextPosition } from "./types";
+import { LocationPoint, MapProps } from "./types";
 import { getBoundedStagePosition } from "./helpers";
 import TextLocationPointGroup from "./TextLocationPointGroup";
-
-function createRandomPosition(from: number, to: number) {
-  return {
-    x: Math.floor(Math.random() * (to - from + 1)) + from,
-    y: Math.floor(Math.random() * (to - from + 1)) + from,
-  };
-}
+import PointsControlTable from "./PointsControlTable";
 
 export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const stageRef = useRef<Konva.Stage>(null);
@@ -27,18 +20,13 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const [scale, setScale] = useState(minScale);
   const [points, setPoints] = useState<LocationPoint[]>([]);
 
-  const [newPointData, setNewPointData] = useState({
-    text: "Ул. Николаева 11В",
-    textPos: "right",
-  });
-
   const stageCenterPos = {
     x: -(mapImageSize.width * minScale - stageSize.width) / 2,
     y: -(mapImageSize.height * minScale - stageSize.height) / 2,
   };
 
   const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
-    const scaleBy = 1.05;
+    const scaleBy = 1.02;
     if (!stageRef.current) {
       return;
     }
@@ -91,26 +79,6 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
     return pos;
   };
 
-  const addPoint = useCallback(() => {
-    setPoints((prev) => [
-      ...prev,
-      {
-        id: nanoid(),
-        pos: createRandomPosition(500, 2000),
-        // pos: { x: 1612.4284253073436, y: 1702.802797238678 },
-        text: newPointData.text,
-        textPos: newPointData.textPos as TextPos,
-      },
-    ]);
-  }, [newPointData]);
-
-  const handleDeletePoint = (
-    e: React.MouseEvent<HTMLButtonElement> & { target: { id: string } }
-  ) => {
-    const filteredPoints = points.filter((p) => p.id !== e.target.id);
-    setPoints(filteredPoints);
-  };
-
   if (imageStatus === "loading") {
     return <div>Loadding...</div>;
   }
@@ -142,59 +110,7 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
           ))}
         </Layer>
       </Stage>
-
-      <label htmlFor="#textInput">Текст</label>
-      <input
-        type="text"
-        id="textInput"
-        value={newPointData.text}
-        onChange={(e) => {
-          setNewPointData((prev) => ({ ...prev, text: e.target.value }));
-        }}
-      />
-      <select
-        value={newPointData.textPos}
-        onChange={(e) => {
-          setNewPointData((prev) => ({
-            ...prev,
-            textPos: e.target.value as TextPos,
-          }));
-        }}
-      >
-        {Object.keys(TextPosition).map((pos) => (
-          <option value={pos} key={pos}>
-            {TextPosition[pos as TextPos]}
-          </option>
-        ))}
-      </select>
-      <button onClick={addPoint}>Добавить</button>
-      {points.length > 0 && (
-        <table>
-          <thead>
-            <tr>
-              <th>Текст</th>
-              <th>Координаты</th>
-              <th>Ориентация текста</th>
-            </tr>
-          </thead>
-          <tbody>
-            {points.map((point) => (
-              <tr key={point.id}>
-                <td>{point.text}</td>
-                <td>
-                  {point.pos.x} {point.pos.y}
-                </td>
-                <td>{TextPosition[point.textPos]}</td>
-                <td>
-                  <button id={point.id} onClick={handleDeletePoint}>
-                    X
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <PointsControlTable points={points} setPoints={setPoints} />
     </>
   );
 });
