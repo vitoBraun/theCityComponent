@@ -134,6 +134,8 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         scale={{ x: scale, y: scale }}
         x={stageCenterPos.x}
         y={stageCenterPos.y}
+        onDragMove={() => {}}
+        onDragEnd={() => {}}
       >
         <Layer>
           <Image image={mapImage} />
@@ -168,7 +170,9 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         }}
       >
         {Object.keys(TextPosition).map((pos) => (
-          <option value={pos}>{TextPosition[pos as TextPos]}</option>
+          <option value={pos} key={pos}>
+            {TextPosition[pos as TextPos]}
+          </option>
         ))}
       </select>
       <button onClick={addPoint}>Добавить</button>
