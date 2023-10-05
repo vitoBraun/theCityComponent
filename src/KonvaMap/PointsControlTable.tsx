@@ -21,6 +21,26 @@ function PointsControlTable({
     setNewPointData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleChangePoint = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setPoints((prevPoints) => {
+      const pointIndex = prevPoints.findIndex(
+        (point) => point.id === e.target.id
+      );
+
+      const updatedPoint = {
+        ...prevPoints[pointIndex],
+        [e.target.name]: e.target.value,
+      };
+
+      const updatedPoints = [...prevPoints];
+      updatedPoints[pointIndex] = updatedPoint;
+
+      return updatedPoints;
+    });
+  };
+
   const addPoint = useCallback(() => {
     setPoints((prev) => [
       ...prev,
@@ -80,7 +100,20 @@ function PointsControlTable({
                 <td>
                   x: {point.pos.x} y: {point.pos.y}
                 </td>
-                <td>{TextPosition[point.textPos]}</td>
+                <td>
+                  <select
+                    id={point.id}
+                    value={point.textPos}
+                    name="textPos"
+                    onChange={handleChangePoint}
+                  >
+                    {Object.keys(TextPosition).map((pos) => (
+                      <option value={pos} key={pos}>
+                        {TextPosition[pos as TextPos]}
+                      </option>
+                    ))}
+                  </select>
+                </td>
                 <td>
                   <button id={point.id} onClick={handleDeletePoint}>
                     X
