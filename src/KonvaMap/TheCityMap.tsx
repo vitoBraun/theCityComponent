@@ -126,7 +126,7 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         name="safeframe"
         checked={isSafeframeVisible}
         onChange={() => setIsSafeframeVisible((prev) => !prev)}
-      ></input>
+      />
       <PointsControlTable points={points} setPoints={setPoints} />
     </div>
   );
