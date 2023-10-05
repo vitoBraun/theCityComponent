@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { LocationPoint, TextPos, TextPosition } from "./types";
 import { nanoid } from "nanoid";
-import { createRandomPosition } from "./helpers";
+// import { createRandomPosition } from "./helpers";
+import useGeoPoint from "./useGeoPoint";
 
 function PointsControlTable({
   points,
@@ -41,19 +42,22 @@ function PointsControlTable({
     });
   };
 
-  const addPoint = useCallback(() => {
+  const { isFetching, fetchGeoPoint } = useGeoPoint(newPointData.text);
+
+  const addPoint = useCallback(async () => {
+    const data = await fetchGeoPoint();
+
     setPoints((prev) => [
       ...prev,
       {
         id: nanoid(),
-        pos: createRandomPosition(500, 2000),
-        // pos: { x: 1612.4284253073436, y: 1702.802797238678 },
+        pos: data?.geometry?.pixel_coordinates || { x: 0, y: 0 },
         text: newPointData.text,
         textPos: newPointData.textPos as TextPos,
       },
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newPointData]);
+  }, [newPointData, fetchGeoPoint]);
 
   const handleDeletePoint = (
     e: React.MouseEvent<HTMLButtonElement> & { target: { id: string } }
@@ -83,7 +87,9 @@ function PointsControlTable({
           </option>
         ))}
       </select>
-      <button onClick={addPoint}>Добавить</button>
+      <button onClick={addPoint} disabled={isFetching}>
+        Добавить
+      </button>
       {points.length > 0 && (
         <table>
           <thead>
