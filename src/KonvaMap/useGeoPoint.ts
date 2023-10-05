@@ -21,7 +21,7 @@ const GESERVER_THECITY_API = "https://geo.emg24.ru/api/thecity";
 
 async function makeRequest(
   url: string,
-  opts?: RequestInit
+  opts?: RequestInit,
 ): Promise<GeoResponse> {
   return new Promise((resolve) => {
     setTimeout(() => {

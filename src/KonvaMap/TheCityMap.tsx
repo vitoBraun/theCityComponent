@@ -62,7 +62,7 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
       newPos,
       newScale,
       stageSize,
-      mapImageSize
+      mapImageSize,
     );
 
     stageRef.current.position(boundedPos);
@@ -75,7 +75,7 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         pos,
         currentScale,
         stageSize,
-        mapImageSize
+        mapImageSize,
       );
       return boundedPost;
     }

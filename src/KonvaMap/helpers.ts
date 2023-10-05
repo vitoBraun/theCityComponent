@@ -5,7 +5,7 @@ export function getBoundedStagePosition(
   stageNewPosition: Vector2d,
   scale: number,
   stageSize: Size,
-  mapImageSize: Size
+  mapImageSize: Size,
 ) {
   const scaleRevertKoeff = 1 / scale;
 
@@ -43,7 +43,7 @@ export function getBoundedStagePosition(
 export function getTextOffset(
   textPos: LocationPoint["textPos"],
   textSize: Size,
-  scale: number
+  scale: number,
 ) {
   const xOffsetes = {
     left: (textSize.width + 11) / scale,
