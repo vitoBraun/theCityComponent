@@ -12,6 +12,7 @@ import PointsControlTable from "./PointsControlTable";
 export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const stageRef = useRef<Konva.Stage>(null);
   const [mapImage, imageStatus] = useImage("./map.png");
+  const [safeFrameImg] = useImage("./safe_frame.png");
   const mapImageSize = {
     width: mapImage?.naturalWidth || 0,
     height: mapImage?.naturalHeight || 0,
@@ -19,6 +20,7 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
 
   const [scale, setScale] = useState(minScale);
   const [points, setPoints] = useState<LocationPoint[]>([]);
+  const [isSafeframeVisible, setIsSafeframeVisible] = useState(false);
 
   const stageCenterPos = {
     x: -(mapImageSize.width * minScale - stageSize.width) / 2,
@@ -69,12 +71,13 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const handleMoveStage = (pos: Vector2d): Vector2d => {
     if (stageRef.current) {
       const currentScale = stageRef.current.scaleX();
-      return getBoundedStagePosition(
+      const boundedPost = getBoundedStagePosition(
         pos,
         currentScale,
         stageSize,
         mapImageSize
       );
+      return boundedPost;
     }
     return pos;
   };
@@ -84,7 +87,14 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   }
 
   return (
-    <>
+    <div style={{ position: "relative" }}>
+      {isSafeframeVisible && (
+        <img
+          src={safeFrameImg ? safeFrameImg.src : ""}
+          alt="sageFrame"
+          style={{ position: "absolute", zIndex: 1, pointerEvents: "none" }}
+        />
+      )}
       <Stage
         ref={stageRef}
         {...stageSize}
@@ -110,7 +120,14 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
           ))}
         </Layer>
       </Stage>
+      <label htmlFor="safeframe">SafeFrame</label>
+      <input
+        type="checkbox"
+        name="safeframe"
+        checked={isSafeframeVisible}
+        onChange={() => setIsSafeframeVisible((prev) => !prev)}
+      ></input>
       <PointsControlTable points={points} setPoints={setPoints} />
-    </>
+    </div>
   );
 });
