@@ -1,16 +1,34 @@
 import { KonvaEventObject } from "konva/lib/Node";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Konva from "konva";
 import { Stage, Layer, Image } from "react-konva";
 import useImage from "use-image";
 import { Vector2d } from "konva/lib/types";
-import { LocationPoint, MapProps } from "./types";
+import { LocationPoint, MapProps, Size } from "./types";
 import { getBoundedStagePosition } from "./helpers";
 import TextLocationPointGroup from "./TextLocationPointGroup";
 import PointsControlTable from "./PointsControlTable";
 
+function getFrameCoordsArray(
+  boundedPos: Vector2d,
+  scale: number,
+  stageSize: Size
+) {
+  return [
+    {
+      x: -Math.round(boundedPos.x / scale),
+      y: Math.round(boundedPos.y / scale),
+    },
+    {
+      x: -Math.round(boundedPos.x / scale - stageSize.width / scale),
+      y: Math.round(boundedPos.y / scale - stageSize.height / scale),
+    },
+  ];
+}
+
 export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const stageRef = useRef<Konva.Stage>(null);
+
   const [mapImage, imageStatus] = useImage("./map.png");
   const [safeFrameImg] = useImage("./safe_frame.png");
   const mapImageSize = {
@@ -26,6 +44,24 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
     x: -(mapImageSize.width * minScale - stageSize.width) / 2,
     y: -(mapImageSize.height * minScale - stageSize.height) / 2,
   };
+
+  const [stagePos, setStagePos] = useState<Vector2d[]>([]);
+
+  useEffect(() => {
+    if (imageStatus === "loaded" && stageRef.current) {
+      setStagePos([
+        {
+          x: -Math.round(stageRef.current.x()),
+          y: Math.round(stageRef.current.y()),
+        },
+        {
+          x: Math.round(stageSize.width / scale),
+          y: -Math.round(stageSize.height / scale),
+        },
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageStatus, stageRef.current]);
 
   const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
     const scaleBy = 1.02;
@@ -62,8 +98,10 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
       newPos,
       newScale,
       stageSize,
-      mapImageSize,
+      mapImageSize
     );
+
+    setStagePos(getFrameCoordsArray(boundedPos, scale, stageSize));
 
     stageRef.current.position(boundedPos);
   };
@@ -71,13 +109,14 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
   const handleMoveStage = (pos: Vector2d): Vector2d => {
     if (stageRef.current) {
       const currentScale = stageRef.current.scaleX();
-      const boundedPost = getBoundedStagePosition(
+      const boundedPos = getBoundedStagePosition(
         pos,
         currentScale,
         stageSize,
-        mapImageSize,
+        mapImageSize
       );
-      return boundedPost;
+      setStagePos(getFrameCoordsArray(boundedPos, scale, stageSize));
+      return boundedPos;
     }
     return pos;
   };
@@ -127,6 +166,17 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         checked={isSafeframeVisible}
         onChange={() => setIsSafeframeVisible((prev) => !prev)}
       />
+      <br />
+      {stagePos.length > 0 && (
+        <>
+          <br />
+          {`Левый верхний угол: ${stagePos[0].x} ${stagePos[0].y} `}
+          <br />
+          {`Правый нижний угол: ${stagePos[1].x} ${stagePos[1].y}`}
+          <br />
+        </>
+      )}
+      <br />
       <PointsControlTable points={points} setPoints={setPoints} />
     </div>
   );

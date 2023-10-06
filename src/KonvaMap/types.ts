@@ -29,12 +29,9 @@ export type MapProps = {
 };
 
 export type GeoResponse = {
-  properties: {
-    input_address: string;
-    geocode_address: string;
-    lon: number;
-    lat: number;
-  };
+  input_address: string;
+  geocode_address: string;
+
   geometry: {
     pixel_coordinates: Vector2d;
   };

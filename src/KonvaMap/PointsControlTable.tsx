@@ -10,23 +10,26 @@ function PointsControlTable({
   points: LocationPoint[];
   setPoints: (value: React.SetStateAction<LocationPoint[]>) => void;
 }) {
-  const [newPointData, setNewPointData] = useState({
-    text: "Ул. Николаева 11В",
-    textPos: "right",
+  const [newPointData, setNewPointData] = useState<{
+    newPointText: string;
+    newPointTextPos: TextPos;
+  }>({
+    newPointText: "Ул. Николаева 11В",
+    newPointTextPos: "right",
   });
 
   const handleChangeNewPoint = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setNewPointData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleChangePoint = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setPoints((prevPoints) => {
       const pointIndex = prevPoints.findIndex(
-        (point) => point.id === e.target.id,
+        (point) => point.id === e.target.id
       );
 
       const updatedPoint = {
@@ -41,25 +44,31 @@ function PointsControlTable({
     });
   };
 
-  const { isFetching, fetchGeoPoint } = useGeoPoint(newPointData.text);
+  const { isFetching, fetchGeoPoint } = useGeoPoint(newPointData.newPointText);
 
   const addPoint = useCallback(async () => {
     const data = await fetchGeoPoint();
+    if (!data) return;
+
+    const pos = {
+      x: data?.geometry?.pixel_coordinates.x,
+      y: -data?.geometry?.pixel_coordinates.y,
+    };
 
     setPoints((prev) => [
       ...prev,
       {
         id: nanoid(),
-        pos: data?.geometry?.pixel_coordinates || { x: 0, y: 0 },
-        text: newPointData.text,
-        textPos: newPointData.textPos as TextPos,
+        pos,
+        text: newPointData.newPointText,
+        textPos: newPointData.newPointTextPos,
       },
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newPointData, fetchGeoPoint]);
 
   const handleDeletePoint = (
-    e: React.MouseEvent<HTMLButtonElement> & { target: { id: string } },
+    e: React.MouseEvent<HTMLButtonElement> & { target: { id: string } }
   ) => {
     const filteredPoints = points.filter((p) => p.id !== e.target.id);
     setPoints(filteredPoints);
@@ -71,13 +80,13 @@ function PointsControlTable({
       <input
         type="text"
         id="textInput"
-        name="text"
-        value={newPointData.text}
+        name="newPointText"
+        value={newPointData.newPointText}
         onChange={handleChangeNewPoint}
       />
       <select
-        value={newPointData.textPos}
-        name="textPos"
+        value={newPointData.newPointTextPos}
+        name="newPointTextPos"
         onChange={handleChangeNewPoint}
       >
         {Object.keys(TextPosition).map((pos) => (
@@ -101,7 +110,15 @@ function PointsControlTable({
           <tbody>
             {points.map((point) => (
               <tr key={point.id}>
-                <td>{point.text}</td>
+                <td>
+                  <input
+                    id={point.id}
+                    type="text"
+                    name="text"
+                    value={point.text}
+                    onChange={handleChangePoint}
+                  />
+                </td>
                 <td>
                   x: {point.pos.x} y: {point.pos.y}
                 </td>
