@@ -1,25 +1,25 @@
 import { useState } from "react";
 import { GeoResponse } from "./types";
 import { data } from "./mock";
-const GEOSERVER_THECITY_API = "https://geo.emg24.ru/api/thecity";
+const GEOSERVER_THECITY_API = "/api/v2/geo-api";
 
-// async function makeRequest<T = GeoResponse>(
-//   url: string,
-//   opts?: RequestInit
-// ): Promise<T> {
-//   const resp = await fetch(url, {
-//     credentials: "include",
-//     ...opts,
-//   });
-//   if (resp.ok) {
-//     return resp.json();
-//   } else {
-//     const message = await resp.text();
-//     throw new Error(message);
-//   }
-// }
+async function makeRequest<T = GeoResponse>(
+  url: string,
+  opts?: RequestInit
+): Promise<T> {
+  const resp = await fetch(url, {
+    credentials: "include",
+    ...opts,
+  });
+  if (resp.ok) {
+    return resp.json();
+  } else {
+    const message = await resp.text();
+    throw new Error(message);
+  }
+}
 
-async function makeRequest(
+async function makeFakeRequest(
   url: string,
   opts?: RequestInit
 ): Promise<GeoResponse> {
@@ -43,7 +43,7 @@ export default function useGeoPoint(address: string): GeoHookReturn {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ address }),
   };
-  const makeApiRequest = async () => {
+  const fetchGeoPoint = async () => {
     try {
       setIsFetching(true);
       const resp = await makeRequest(GEOSERVER_THECITY_API, options);
@@ -57,6 +57,6 @@ export default function useGeoPoint(address: string): GeoHookReturn {
 
   return {
     isFetching,
-    fetchGeoPoint: makeApiRequest,
+    fetchGeoPoint,
   };
 }

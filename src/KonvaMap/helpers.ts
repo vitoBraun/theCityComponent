@@ -5,18 +5,18 @@ export function getBoundedStagePosition(
   stageNewPosition: Vector2d,
   scale: number,
   stageSize: Size,
-  mapImageSize: Size,
+  mapImageSize: Size
 ) {
   const scaleRevertKoeff = 1 / scale;
 
   const scaledStagePosition = {
-    x: stageNewPosition.x * scaleRevertKoeff,
-    y: stageNewPosition.y * scaleRevertKoeff,
+    x: stageNewPosition.x / scale,
+    y: stageNewPosition.y / scale,
   };
 
   const scaledStageSize = {
-    width: stageSize.width * scaleRevertKoeff,
-    height: stageSize.height * scaleRevertKoeff,
+    width: stageSize.width / scale,
+    height: stageSize.height / scale,
   };
 
   if (stageNewPosition.x > 0) stageNewPosition.x = 0;
@@ -43,7 +43,7 @@ export function getBoundedStagePosition(
 export function getTextOffset(
   textPos: LocationPoint["textPos"],
   textSize: Size,
-  scale: number,
+  scale: number
 ) {
   const xOffsetes = {
     left: (textSize.width + 11) / scale,
@@ -103,4 +103,21 @@ export function createRandomPosition(from: number, to: number) {
     x: Math.floor(Math.random() * (to - from + 1)) + from,
     y: Math.floor(Math.random() * (to - from + 1)) + from,
   };
+}
+
+export function getFrameCoordsArray(
+  boundedPos: Vector2d,
+  scale: number,
+  stageSize: Size
+): [Vector2d, Vector2d] {
+  return [
+    {
+      x: -Math.round(boundedPos.x / scale),
+      y: -Math.round(boundedPos.y / scale),
+    },
+    {
+      x: -Math.round(boundedPos.x / scale - stageSize.width / scale),
+      y: -Math.round(boundedPos.y / scale - stageSize.height / scale),
+    },
+  ];
 }

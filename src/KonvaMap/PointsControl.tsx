@@ -3,7 +3,7 @@ import { LocationPoint, TextPos, TextPosition } from "./types";
 import { nanoid } from "nanoid";
 import useGeoPoint from "./useGeoPoint";
 
-function PointsControlTable({
+function PointsControl({
   points,
   setPoints,
 }: {
@@ -14,7 +14,7 @@ function PointsControlTable({
     newPointText: string;
     newPointTextPos: TextPos;
   }>({
-    newPointText: "Ул. Николаева 11В",
+    newPointText: "Правды 24",
     newPointTextPos: "right",
   });
 
@@ -50,9 +50,14 @@ function PointsControlTable({
     const data = await fetchGeoPoint();
     if (!data) return;
 
+    if (data.geocode_address.length === 0) {
+      alert("Адрес не найден");
+      return;
+    }
+
     const pos = {
-      x: data?.geometry?.pixel_coordinates.x,
-      y: -data?.geometry?.pixel_coordinates.y,
+      x: Math.round(data?.geometry?.pixel_coordinates.x),
+      y: Math.round(-data?.geometry?.pixel_coordinates.y),
     };
 
     setPoints((prev) => [
@@ -98,6 +103,7 @@ function PointsControlTable({
       <button onClick={addPoint} disabled={isFetching}>
         Добавить
       </button>
+
       {points.length > 0 && (
         <table>
           <thead>
@@ -150,4 +156,4 @@ function PointsControlTable({
   );
 }
 
-export default React.memo(PointsControlTable);
+export default React.memo(PointsControl);

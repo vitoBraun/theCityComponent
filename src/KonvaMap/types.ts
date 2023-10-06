@@ -1,4 +1,5 @@
 import { Vector2d } from "konva/lib/types";
+import { Dispatch, SetStateAction } from "react";
 
 export const TextPosition = {
   left: "Слева",
@@ -22,10 +23,19 @@ export type LocationPoint = {
 
 export type Size = { width: number; height: number };
 
+export type MapData = {
+  scale: number;
+  stagePos: Vector2d;
+  points: LocationPoint[];
+  framePosition: [Vector2d, Vector2d] | [];
+};
+
 export type MapProps = {
   maxScale: number;
   minScale: number;
   stageSize: Size;
+  saveMapData: Dispatch<SetStateAction<MapData | undefined>>;
+  initialMapData?: MapData;
 };
 
 export type GeoResponse = {
