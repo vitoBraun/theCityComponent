@@ -201,9 +201,7 @@ export default React.memo(
         <br />
         <PointsControl points={points} setPoints={setPoints} />
         <br />
-        <button onClick={handleDataSend} disabled={points.length === 0}>
-          Отправить
-        </button>
+        <button onClick={handleDataSend}>Отправить</button>
       </div>
     );
   }
