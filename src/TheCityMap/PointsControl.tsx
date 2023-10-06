@@ -19,17 +19,17 @@ function PointsControl({
   });
 
   const handleChangeNewPoint = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setNewPointData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleChangePoint = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setPoints((prevPoints) => {
       const pointIndex = prevPoints.findIndex(
-        (point) => point.id === e.target.id,
+        (point) => point.id === e.target.id
       );
 
       const updatedPoint = {
@@ -48,9 +48,8 @@ function PointsControl({
 
   const addPoint = useCallback(async () => {
     const data = await fetchGeoPoint();
-    if (!data) return;
 
-    if (data.geocode_address.length === 0) {
+    if (!data || data.error || data.geocode_address.length === 0) {
       alert("Адрес не найден");
       return;
     }
@@ -73,7 +72,7 @@ function PointsControl({
   }, [newPointData, fetchGeoPoint]);
 
   const handleDeletePoint = (
-    e: React.MouseEvent<HTMLButtonElement> & { target: { id: string } },
+    e: React.MouseEvent<HTMLButtonElement> & { target: { id: string } }
   ) => {
     const filteredPoints = points.filter((p) => p.id !== e.target.id);
     setPoints(filteredPoints);

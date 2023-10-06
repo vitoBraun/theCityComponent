@@ -56,7 +56,7 @@ export type MapProps = {
 export type GeoResponse = {
   input_address: string;
   geocode_address: string;
-
+  error?: string;
   geometry: {
     pixel_coordinates: Vector2d;
   };

@@ -19,14 +19,14 @@ export default React.memo(
   ({
     maxScale = 5,
     minScale = 0.35,
-    stageSize = { width: 1050, height: 560 },
+    stageSize = { width: 1050, height: 600 },
     initialMapData,
     saveMapData,
   }: MapProps) => {
     const stageRef = useRef<Konva.Stage>(null);
 
-    const [mapImage, imageStatus] = useImage("./map.png");
-    const [safeFrameImg] = useImage("./safe_frame.png");
+    const [mapImage, imageStatus] = useImage("./the-city-images/map.png");
+    const [safeFrameImg] = useImage("./the-city-images/safe_frame.png");
     const mapImageSize = {
       width: mapImage?.naturalWidth || 0,
       height: mapImage?.naturalHeight || 0,
@@ -34,7 +34,7 @@ export default React.memo(
 
     const [scale, setScale] = useState(initialMapData?.scale || minScale);
     const [points, setPoints] = useState<LocationPoint[]>(
-      initialMapData?.points || [],
+      initialMapData?.points || []
     );
     const [isSafeframeVisible, setIsSafeframeVisible] = useState(false);
     const [framePos, setFramePos] = useState<[Vector2d, Vector2d] | []>([]);
@@ -65,7 +65,7 @@ export default React.memo(
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
       },
-      [imageStatus, stageRef.current, initialMapData],
+      [imageStatus, stageRef.current, initialMapData]
     );
 
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
@@ -103,7 +103,7 @@ export default React.memo(
         newPos,
         newScale,
         stageSize,
-        mapImageSize,
+        mapImageSize
       );
 
       setFramePos(getFrameCoordsArray(boundedPos, scale, stageSize));
@@ -118,7 +118,7 @@ export default React.memo(
           pos,
           currentScale,
           stageSize,
-          mapImageSize,
+          mapImageSize
         );
         setFramePos(getFrameCoordsArray(boundedPos, scale, stageSize));
         return boundedPos;
@@ -152,7 +152,7 @@ export default React.memo(
         {isSafeframeVisible && (
           <img
             src={safeFrameImg ? safeFrameImg.src : ""}
-            alt="sageFrame"
+            alt="Safe Frame png"
             style={{ position: "absolute", zIndex: 1, pointerEvents: "none" }}
           />
         )}
@@ -206,5 +206,5 @@ export default React.memo(
         </button>
       </div>
     );
-  },
+  }
 );
