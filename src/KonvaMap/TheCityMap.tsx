@@ -17,11 +17,11 @@ function getFrameCoordsArray(
   return [
     {
       x: -Math.round(boundedPos.x / scale),
-      y: Math.round(boundedPos.y / scale),
+      y: -Math.round(boundedPos.y / scale),
     },
     {
       x: -Math.round(boundedPos.x / scale - stageSize.width / scale),
-      y: Math.round(boundedPos.y / scale - stageSize.height / scale),
+      y: -Math.round(boundedPos.y / scale - stageSize.height / scale),
     },
   ];
 }
@@ -51,12 +51,12 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
     if (imageStatus === "loaded" && stageRef.current) {
       setStagePos([
         {
-          x: -Math.round(stageRef.current.x()),
-          y: Math.round(stageRef.current.y()),
+          x: -Math.round(stageRef.current.x() / scale),
+          y: -Math.round(stageRef.current.y() / scale),
         },
         {
           x: Math.round(stageSize.width / scale),
-          y: -Math.round(stageSize.height / scale),
+          y: Math.round(stageSize.height / scale),
         },
       ]);
     }
@@ -116,6 +116,7 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
         mapImageSize
       );
       setStagePos(getFrameCoordsArray(boundedPos, scale, stageSize));
+      console.log(boundedPos);
       return boundedPos;
     }
     return pos;
@@ -170,9 +171,9 @@ export default React.memo(({ maxScale, stageSize, minScale }: MapProps) => {
       {stagePos.length > 0 && (
         <>
           <br />
-          {`Левый верхний угол: ${stagePos[0].x} ${stagePos[0].y} `}
+          {`Левый верхний угол: x:${stagePos[0].x} y:${stagePos[0].y} `}
           <br />
-          {`Правый нижний угол: ${stagePos[1].x} ${stagePos[1].y}`}
+          {`Правый нижний угол: x:${stagePos[1].x} y:${stagePos[1].y}`}
           <br />
         </>
       )}
