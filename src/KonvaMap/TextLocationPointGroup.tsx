@@ -14,12 +14,6 @@ const TextLocatiionPointGroup = ({
   const textRef = useRef<Konva.Text>(null);
   const circleRef = useRef<Konva.Circle>(null);
 
-  const handleDragText = (e: any) => {
-    if (!textRef.current) {
-      return;
-    }
-  };
-
   const [textSize, setTextSize] = useState<Size>({
     width: 0,
     height: 0,
@@ -31,7 +25,7 @@ const TextLocatiionPointGroup = ({
       width: textRef.current.width() * scale,
       height: textRef.current.height() * scale,
     });
-  }, [scale]);
+  }, [scale, point.text]);
 
   return (
     <Group x={point.pos.x} y={point.pos.y} key={point.id}>
@@ -40,7 +34,6 @@ const TextLocatiionPointGroup = ({
         text={point.text}
         fill="white"
         fontSize={25 / scale}
-        onDragMove={handleDragText}
         ref={textRef}
         {...getTextOffset(point.textPos, textSize, scale)}
       />
