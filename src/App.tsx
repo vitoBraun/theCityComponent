@@ -6,7 +6,10 @@ function App() {
   const [mapData, setMapData] = useState<MapData>();
 
   useEffect(() => {
-    console.log(mapData);
+    if (mapData) {
+      //Добавь свою логику что делать дальше с данными
+      console.log(mapData);
+    }
   }, [mapData]);
 
   return (

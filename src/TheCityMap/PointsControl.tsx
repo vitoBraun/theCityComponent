@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { LocationPoint, TextPos, TextPosition } from "./types";
+import { LocationPoint, AddressOrient, AddresOrientation } from "./types";
 import { nanoid } from "nanoid";
 import useGeoPoint from "./useGeoPoint";
 
@@ -11,11 +11,11 @@ function PointsControl({
   setPoints: (value: React.SetStateAction<LocationPoint[]>) => void;
 }) {
   const [newPointData, setNewPointData] = useState<{
-    newPointText: string;
-    newPointTextPos: TextPos;
+    newPointAddress: string;
+    newPointAddressPos: AddressOrient;
   }>({
-    newPointText: "Правды 24",
-    newPointTextPos: "right",
+    newPointAddress: "Правды 24",
+    newPointAddressPos: "right",
   });
 
   const handleChangeNewPoint = (
@@ -44,7 +44,9 @@ function PointsControl({
     });
   };
 
-  const { isFetching, fetchGeoPoint } = useGeoPoint(newPointData.newPointText);
+  const { isFetching, fetchGeoPoint } = useGeoPoint(
+    newPointData.newPointAddress
+  );
 
   const addPoint = useCallback(async () => {
     const data = await fetchGeoPoint();
@@ -64,8 +66,8 @@ function PointsControl({
       {
         id: nanoid(),
         pos,
-        text: newPointData.newPointText,
-        textPos: newPointData.newPointTextPos,
+        address: newPointData.newPointAddress,
+        addressPos: newPointData.newPointAddressPos,
       },
     ]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,22 +82,22 @@ function PointsControl({
 
   return (
     <>
-      <label htmlFor="#textInput">Текст</label>
+      <label htmlFor="#textInput">Адрес</label>
       <input
         type="text"
         id="textInput"
-        name="newPointText"
-        value={newPointData.newPointText}
+        name="newPointAddress"
+        value={newPointData.newPointAddress}
         onChange={handleChangeNewPoint}
       />
       <select
-        value={newPointData.newPointTextPos}
-        name="newPointTextPos"
+        value={newPointData.newPointAddressPos}
+        name="newPointAddressPos"
         onChange={handleChangeNewPoint}
       >
-        {Object.keys(TextPosition).map((pos) => (
+        {Object.keys(AddresOrientation).map((pos) => (
           <option value={pos} key={pos}>
-            {TextPosition[pos as TextPos]}
+            {AddresOrientation[pos as AddressOrient]}
           </option>
         ))}
       </select>
@@ -107,7 +109,7 @@ function PointsControl({
         <table>
           <thead>
             <tr>
-              <th>Текст</th>
+              <th>Адрес</th>
               <th>Координаты</th>
               <th>Ориентация текста</th>
             </tr>
@@ -119,8 +121,8 @@ function PointsControl({
                   <input
                     id={point.id}
                     type="text"
-                    name="text"
-                    value={point.text}
+                    name="address"
+                    value={point.address}
                     onChange={handleChangePoint}
                   />
                 </td>
@@ -130,13 +132,13 @@ function PointsControl({
                 <td>
                   <select
                     id={point.id}
-                    value={point.textPos}
-                    name="textPos"
+                    value={point.addressPos}
+                    name="addressPos"
                     onChange={handleChangePoint}
                   >
-                    {Object.keys(TextPosition).map((pos) => (
+                    {Object.keys(AddresOrientation).map((pos) => (
                       <option value={pos} key={pos}>
-                        {TextPosition[pos as TextPos]}
+                        {AddresOrientation[pos as AddressOrient]}
                       </option>
                     ))}
                   </select>

@@ -65,7 +65,7 @@ export default React.memo(
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
       },
-      [imageStatus, stageRef.current, initialMapData]
+      [imageStatus, initialMapData, scale, stageSize.width, stageSize.height]
     );
 
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {

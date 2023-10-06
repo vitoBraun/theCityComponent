@@ -1,7 +1,7 @@
 import { Vector2d } from "konva/lib/types";
 import { Dispatch, SetStateAction } from "react";
 
-export const TextPosition = {
+export const AddresOrientation = {
   left: "Слева",
   right: "Справа",
   top: "Сверху",
@@ -12,13 +12,13 @@ export const TextPosition = {
   "bottom-right": "Снизу Справа",
 };
 
-export type TextPos = keyof typeof TextPosition;
+export type AddressOrient = keyof typeof AddresOrientation;
 
 export type LocationPoint = {
   id: string;
   pos: Vector2d;
-  text: string;
-  textPos: TextPos;
+  address: string;
+  addressPos: AddressOrient;
 };
 
 export type Size = { width: number; height: number };

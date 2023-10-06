@@ -25,17 +25,17 @@ const TextLocatiionPointGroup = ({
       width: textRef.current.width() * scale,
       height: textRef.current.height() * scale,
     });
-  }, [scale, point.text]);
+  }, [scale, point.address]);
 
   return (
     <Group x={point.pos.x} y={point.pos.y} key={point.id}>
       <Circle fill="red" radius={6 / scale} ref={circleRef} />
       <Text
-        text={point.text}
+        text={point.address}
         fill="white"
         fontSize={25 / scale}
         ref={textRef}
-        {...getTextOffset(point.textPos, textSize, scale)}
+        {...getTextOffset(point.addressPos, textSize, scale)}
       />
     </Group>
   );
