@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import TheCityMap from "./KonvaMap/TheCityMap";
-import { MapData } from "./KonvaMap/types";
+import TheCityMap from "./TheCityMap";
+import { MapData } from "./TheCityMap/types";
 
 function App() {
   const [mapData, setMapData] = useState<MapData>();
