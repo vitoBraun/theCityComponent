@@ -126,7 +126,7 @@ export default React.memo(
       return pos;
     };
 
-    const memoisedData = useMemo(() => {
+    const memoizedData = useMemo(() => {
       const data: MapData = {
         scale,
         points,
@@ -140,8 +140,8 @@ export default React.memo(
     }, [framePos, points, scale]);
 
     const handleDataSend = useCallback(() => {
-      saveMapData(memoisedData);
-    }, [memoisedData]);
+      saveMapData(memoizedData);
+    }, [memoizedData, saveMapData]);
 
     if (imageStatus === "loading") {
       return <div>Loadding...</div>;
