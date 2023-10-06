@@ -3,10 +3,7 @@ import { GeoResponse } from "./types";
 import { data } from "./mock";
 const GEOSERVER_THECITY_API = "/api/v2/geo-api";
 
-async function makeRequest<T = GeoResponse>(
-  url: string,
-  opts?: RequestInit,
-): Promise<T> {
+async function makeRequest<T>(url: string, opts?: RequestInit): Promise<T> {
   const resp = await fetch(url, {
     credentials: "include",
     ...opts,
@@ -21,7 +18,7 @@ async function makeRequest<T = GeoResponse>(
 
 async function makeFakeRequest(
   url: string,
-  opts?: RequestInit,
+  opts?: RequestInit
 ): Promise<GeoResponse> {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -46,7 +43,10 @@ export default function useGeoPoint(address: string): GeoHookReturn {
   const fetchGeoPoint = async () => {
     try {
       setIsFetching(true);
-      const resp = await makeRequest(GEOSERVER_THECITY_API, options);
+      const resp = await makeRequest<GeoResponse>(
+        GEOSERVER_THECITY_API,
+        options
+      );
       setIsFetching(false);
       return resp;
     } catch (error) {
