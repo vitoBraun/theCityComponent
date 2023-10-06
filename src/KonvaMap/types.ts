@@ -31,10 +31,25 @@ export type MapData = {
 };
 
 export type MapProps = {
-  maxScale: number;
-  minScale: number;
-  stageSize: Size;
+  /**
+   * SetState функция для сохранения данных
+   */
   saveMapData: Dispatch<SetStateAction<MapData | undefined>>;
+  /**
+   * Максимальный масштаб
+   */
+  maxScale?: number;
+  /**
+   * Минимальный масштаб
+   */
+  minScale?: number;
+  /**
+   * Размер холста
+   */
+  stageSize?: Size;
+  /**
+   * Изначальные данные, если есть. Например при повторе заказа
+   */
   initialMapData?: MapData;
 };
 

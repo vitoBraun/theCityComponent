@@ -11,12 +11,7 @@ function App() {
 
   return (
     <div className="App">
-      <TheCityMap
-        saveMapData={setMapData}
-        maxScale={5}
-        stageSize={{ width: 1050, height: 600 }}
-        minScale={0.35}
-      />
+      <TheCityMap saveMapData={setMapData} />
     </div>
   );
 }

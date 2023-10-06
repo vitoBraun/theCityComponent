@@ -5,7 +5,7 @@ const GEOSERVER_THECITY_API = "/api/v2/geo-api";
 
 async function makeRequest<T = GeoResponse>(
   url: string,
-  opts?: RequestInit
+  opts?: RequestInit,
 ): Promise<T> {
   const resp = await fetch(url, {
     credentials: "include",
@@ -21,7 +21,7 @@ async function makeRequest<T = GeoResponse>(
 
 async function makeFakeRequest(
   url: string,
-  opts?: RequestInit
+  opts?: RequestInit,
 ): Promise<GeoResponse> {
   return new Promise((resolve) => {
     setTimeout(() => {

@@ -17,9 +17,9 @@ import PointsControl from "./PointsControl";
 
 export default React.memo(
   ({
-    maxScale,
-    stageSize,
-    minScale,
+    maxScale = 5,
+    minScale = 0.35,
+    stageSize = { width: 1050, height: 560 },
     initialMapData,
     saveMapData,
   }: MapProps) => {
@@ -34,7 +34,7 @@ export default React.memo(
 
     const [scale, setScale] = useState(initialMapData?.scale || minScale);
     const [points, setPoints] = useState<LocationPoint[]>(
-      initialMapData?.points || []
+      initialMapData?.points || [],
     );
     const [isSafeframeVisible, setIsSafeframeVisible] = useState(false);
     const [framePos, setFramePos] = useState<[Vector2d, Vector2d] | []>([]);
@@ -65,7 +65,7 @@ export default React.memo(
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
       },
-      [imageStatus, stageRef.current, initialMapData]
+      [imageStatus, stageRef.current, initialMapData],
     );
 
     const handleWheel = (e: KonvaEventObject<WheelEvent>) => {
@@ -103,7 +103,7 @@ export default React.memo(
         newPos,
         newScale,
         stageSize,
-        mapImageSize
+        mapImageSize,
       );
 
       setFramePos(getFrameCoordsArray(boundedPos, scale, stageSize));
@@ -118,7 +118,7 @@ export default React.memo(
           pos,
           currentScale,
           stageSize,
-          mapImageSize
+          mapImageSize,
         );
         setFramePos(getFrameCoordsArray(boundedPos, scale, stageSize));
         return boundedPos;
@@ -206,5 +206,5 @@ export default React.memo(
         </button>
       </div>
     );
-  }
+  },
 );
